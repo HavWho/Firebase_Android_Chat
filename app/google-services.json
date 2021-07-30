@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "970335768375",
+    "project_id": "itechartchat",
+    "storage_bucket": "itechartchat.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:970335768375:android:9f0d6d31531d4d411614b2",
+        "android_client_info": {
+          "package_name": "com.example.itechartchat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "970335768375-vp4kh6bners9jgva1b6m0dsehlfeoid1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDBxKCIMXF0Q0jsjoyfSrfNzv5BQTDJOBA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "970335768375-vp4kh6bners9jgva1b6m0dsehlfeoid1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
