@@ -6,6 +6,8 @@
     <string name="logIn">LOG IN</string>
     <string name="welcome">Welcome!</string>
     <string name="signIn">Sign in to your account!</string>
+    <string name="emailError">Your email is incorrect!</string>
+    <string name="passwordError">Your password is incorrect!</string>
     <string name="not_registered">Don\'t have a account. <u>Sign up.</u> </string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

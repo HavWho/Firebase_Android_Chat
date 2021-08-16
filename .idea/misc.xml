@@ -3,14 +3,16 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../layout/custom_preview.xml" value="0.25833333333333336" />
         <entry key="..\:/AndroidProjects/ITechArtChat/app/src/main/res/drawable/rounded_edittext_bottom.xml" value="0.2557291666666667" />
         <entry key="..\:/AndroidProjects/ITechArtChat/app/src/main/res/layout/activity_main.xml" value="0.152" />
         <entry key="..\:/AndroidProjects/ITechArtChat/app/src/main/res/layout/fragment_login.xml" value="0.4" />
         <entry key="..\:/AndroidProjects/ITechArtChat/app/src/main/res/layout/fragment_sign_up.xml" value="0.2" />
+        <entry key="app/src/main/res/layout/fragment_login.xml" value="0.12" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_15" project-jdk-name="JDK" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_X" default="true" project-jdk-name="JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

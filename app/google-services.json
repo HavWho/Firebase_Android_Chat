@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "970335768375",
-    "project_id": "itechartchat",
-    "storage_bucket": "itechartchat.appspot.com"
+    "project_number": "820419938266",
+    "project_id": "itechartchat-228d5",
+    "storage_bucket": "itechartchat-228d5.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:970335768375:android:9f0d6d31531d4d411614b2",
+        "mobilesdk_app_id": "1:820419938266:android:181f78e6b83d5d5f81a2e3",
         "android_client_info": {
           "package_name": "com.example.itechartchat"
         }
       },
       "oauth_client": [
         {
-          "client_id": "970335768375-vp4kh6bners9jgva1b6m0dsehlfeoid1.apps.googleusercontent.com",
+          "client_id": "820419938266-crfmpaie05cnb278sr9eooiseddn75ch.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDBxKCIMXF0Q0jsjoyfSrfNzv5BQTDJOBA"
+          "current_key": "AIzaSyCcXQeAS3fd6DnLiR8ScUnsQ_g6NsMtO9Y"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "970335768375-vp4kh6bners9jgva1b6m0dsehlfeoid1.apps.googleusercontent.com",
+              "client_id": "820419938266-crfmpaie05cnb278sr9eooiseddn75ch.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

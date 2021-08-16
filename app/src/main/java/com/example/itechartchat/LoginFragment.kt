@@ -12,6 +12,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import com.google.android.material.textfield.TextInputEditText
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.internal.disposables.DisposableHelper.dispose
 import timber.log.Timber
 import java.util.*
 
@@ -27,6 +29,7 @@ class LoginFragment : Fragment() {
     private lateinit var mEmailTextInput : TextInputEditText
     private lateinit var passwordTextInput : TextInputEditText
     private lateinit var loginButton : Button
+    private lateinit var emailErrorText : String
     private val loginViewModel = LoginViewModel()
 
     @SuppressLint("CheckResult")
@@ -52,16 +55,36 @@ class LoginFragment : Fragment() {
         Log.d("Fragment", "onResume")
 
         loginViewModel.canLogIn
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 loginButton.isClickable = it
             }
 
         loginViewModel.canLogIn
+            .observeOn(AndroidSchedulers.mainThread())
             .map {
                 if (it) 1.0f else 0.5f
             }
             .subscribe {
                 loginButton.alpha = it
+            }
+
+        loginViewModel.emailValid
+            .filter {
+                it.equals(false)
+            }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                mEmailTextInput.setError(getString(R.string.emailError), null)
+            }
+
+        loginViewModel.passwordValid
+            .filter {
+                it.equals(false)
+            }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                passwordTextInput.setError(getString(R.string.passwordError), null)
             }
 
         loginButton.setOnClickListener {
@@ -87,8 +110,10 @@ class LoginFragment : Fragment() {
 
         loginViewModel.emailText
             .distinctUntilChanged()
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-
+                mEmailTextInput.setText(it.toCharArray(), 0, it.length)
+                mEmailTextInput.setSelection(mEmailTextInput.text.toString().length)
             }
 
         loginViewModel.passwordText
@@ -122,6 +147,12 @@ class LoginFragment : Fragment() {
 
     override fun onPause() {
         Log.d("Fragment","onPause")
+        loginViewModel.emailText.onComplete()
+        loginViewModel.passwordText.onComplete()
+        loginViewModel.logIn.onComplete()
+        loginViewModel.canLogIn.onComplete()
+        loginViewModel.emailValid.onComplete()
+        loginViewModel.passwordValid.onComplete()
         super.onPause()
     }
 
