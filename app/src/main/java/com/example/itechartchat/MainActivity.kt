@@ -1,7 +1,9 @@
 package com.example.itechartchat
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 
 class MainActivity : AppCompatActivity(), LoginFragmentStarter {
     override fun onCreate(savedInstanceState: Bundle?) {
