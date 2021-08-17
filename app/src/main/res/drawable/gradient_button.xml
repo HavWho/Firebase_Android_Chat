@@ -6,7 +6,5 @@
         android:angle="90"
         android:gradientRadius="5dp"
         />
-    <corners
-        android:radius="20dp"
-        />
+
 </shape>

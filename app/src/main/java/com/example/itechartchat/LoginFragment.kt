@@ -41,6 +41,7 @@ class LoginFragment : Fragment() {
         mEmailTextInput = view.findViewById(R.id.email_textinputedittext)
         passwordTextInput = view.findViewById(R.id.password_textinputedittext)
         loginButton = view.findViewById(R.id.login_button)
+        //
         Log.d("Fragment","onCreateView")
 
         //isValidEditText(mEmailTextInput.text.toString().trim())
@@ -90,6 +91,8 @@ class LoginFragment : Fragment() {
         loginButton.setOnClickListener {
             loginViewModel.logIn.onNext(Unit)
         }
+
+
 
         mEmailTextInput.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {

@@ -23,8 +23,8 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/appCompatTextView3"
-        android:layout_width="395dp"
-        android:layout_height="50dp"
+        android:layout_width="400dp"
+        android:layout_height="24dp"
         android:layout_marginTop="4dp"
         android:fontFamily="monospace"
         android:gravity="center_horizontal"
@@ -57,12 +57,13 @@
         android:hint="@string/email"
         app:layout_constraintBottom_toTopOf="@+id/password_textinputlayout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appCompatTextView3">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/email_textinputedittext"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="match_parent"
             android:background="#5E5858"
             android:textColor="@color/white"
             tools:ignore="TextContrastCheck" />
@@ -74,13 +75,14 @@
         android:layout_width="300dp"
         android:layout_height="56dp"
 
-        android:layout_marginBottom="218dp"
+        android:layout_marginTop="152dp"
         android:hint="@string/password"
-        app:errorTextAppearance="@string/passwordError"
         app:errorEnabled="false"
-        app:layout_constraintBottom_toTopOf="@+id/login_button"
+        app:errorTextAppearance="@string/passwordError"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.504"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appCompatTextView3"
         app:passwordToggleContentDescription="description"
         app:passwordToggleEnabled="true"
         app:passwordToggleTint="@color/design_default_color_background">
@@ -88,7 +90,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/password_textinputedittext"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:background="#5A5656"
             android:textColor="@color/white" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -106,21 +108,31 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/password_textinputlayout"
+        app:layout_constraintVertical_bias="0.196" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/forgotpassword_textview"
-        android:layout_width="354dp"
-        android:layout_height="49dp"
+        android:layout_width="359dp"
+        android:layout_height="30dp"
         android:fontFamily="monospace"
         android:gravity="center"
+
         android:text="@string/hyperref_forgot_password"
         android:textColor="#757575"
-
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login_button" />
+        app:layout_constraintTop_toBottomOf="@+id/login_button"
+        app:layout_constraintVertical_bias="0.174" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="left"
+        app:constraint_referenced_ids="forgotpassword_textview" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

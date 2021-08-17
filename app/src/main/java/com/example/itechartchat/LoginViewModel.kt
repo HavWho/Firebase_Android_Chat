@@ -6,14 +6,10 @@ import android.util.Patterns
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import io.reactivex.Observable
-import io.reactivex.ObservableOnSubscribe
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
-import java.util.regex.Pattern
 
 @SuppressLint("CheckResult")
 class LoginViewModel {
@@ -30,7 +26,7 @@ class LoginViewModel {
 
     private fun authenticate(email: String, password: String): Observable<AuthResult> {
         return Observable.create { emitter ->
-            FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
+            auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener {
                     emitter.onNext(it.result)
                     emitter.onComplete()
@@ -39,10 +35,6 @@ class LoginViewModel {
     }
 
     private fun passwordValidate(value: String) : Pair<Boolean, String> {
-        /*val PASSWORD_REGEX = "((?=.*[a-z])(?=.*\\d)(?=.*[A-Z])(?=.*[@#$%!]).{6,})"
-        val pattern = Pattern.compile(PASSWORD_REGEX)
-        val matcher = pattern.matcher(value)
-        return !matcher.matches()*/
         return Pair(value.length >= 6, value)
     }
 
@@ -50,39 +42,32 @@ class LoginViewModel {
         return Pair(Patterns.EMAIL_ADDRESS.matcher(value).matches(), value)
     }
 
-    private fun logInButtonClicked(value : Unit): Pair<String, String> {
-        return Pair(emailText.value.toString().trim(), passwordText.value.toString().trim())
-    }
-/*
-    inline fun handleError() {
-
-    }*/
-
     init {
 
-        val x = emailText
+        val emailTextSharedValidate = emailText
             .debounce(300, TimeUnit.MILLISECONDS)
             .distinctUntilChanged()
             .observeOn(Schedulers.newThread())
             .map {
                 emailValidate(it)
             }
-            .share()
+            .cacheWithInitialCapacity(1)
 
-        val validatedEmail = x
+        val validatedEmail = emailTextSharedValidate
             .filter { it.first }
             .map { it.second }
 
-        val y = passwordText
+        val passwordTextSharedValidate = passwordText
             .debounce(300, TimeUnit.MILLISECONDS)
             .distinctUntilChanged()
             .observeOn(Schedulers.newThread())
             .map {
                 passwordValidate(it)
             }
-            .share()
+            .replay()
+            .publish()
 
-        val validatedPassword = y
+        val validatedPassword = passwordTextSharedValidate
             .filter { it.first }
             .map { it.second }
 
@@ -94,11 +79,14 @@ class LoginViewModel {
             .doOnNext {
                 Log.d("HUY", it.toString())
             }
-            .subscribe {
+            .switchMap {
                 authenticate(it.first, it.second)
             }
+            .subscribe {
+                println(it.user?.uid)
+            }
 
-        y
+        passwordTextSharedValidate
             .doOnNext {
                 Log.d("Error Signal", it.first.toString())
             }
@@ -106,7 +94,7 @@ class LoginViewModel {
                 passwordValid.onNext(it.first)
             }
 
-        x
+        emailTextSharedValidate
             .doOnNext {
                 Log.d("Error Signal", it.first.toString())
             }
