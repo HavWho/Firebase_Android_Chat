@@ -89,6 +89,15 @@ class LoginViewModel {
             .flatMapSingle {
                 authenticate(it.first, it.second)
             }
+            /*.retryWhen {
+                it.flatMapSingle {
+                    authenticate(it.first, it.second)
+                }
+            }*/
+            /* TODO: ask about what to write in retryWhen
+            .retryWhen ({
+
+            })*/
             .subscribe {
                 println(it.user?.uid)
             }
