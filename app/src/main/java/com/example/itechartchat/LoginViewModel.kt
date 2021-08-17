@@ -6,8 +6,8 @@ import android.util.Patterns
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import io.reactivex.Observable
-import io.reactivex.rxjava3.annotations.NonNull
-import io.reactivex.rxjava3.core.Single
+import io.reactivex.SingleSource
+import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
@@ -28,7 +28,7 @@ class LoginViewModel {
     val emailValid = BehaviorSubject.create<Boolean>()
     val passwordValid = BehaviorSubject.create<Boolean>()
 
-    private fun authenticate(email: String, password: String): @NonNull Single<AuthResult>? {
+    private fun authenticate(email: String, password: String): SingleSource<AuthResult>? {
             return Single.create{ emitter ->
                 auth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener {
