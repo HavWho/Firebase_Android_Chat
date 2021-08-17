@@ -62,10 +62,10 @@ class LoginFragment : Fragment() {
             }
 
         loginViewModel.canLogIn
-            .observeOn(AndroidSchedulers.mainThread())
             .map {
                 if (it) 1.0f else 0.5f
             }
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 loginButton.alpha = it
             }

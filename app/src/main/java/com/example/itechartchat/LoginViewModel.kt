@@ -6,6 +6,8 @@ import android.util.Patterns
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import io.reactivex.Observable
+import io.reactivex.rxjava3.annotations.NonNull
+import io.reactivex.rxjava3.core.Single
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
@@ -19,19 +21,21 @@ class LoginViewModel {
     val canLogIn = BehaviorSubject.createDefault(false)
     val logIn = PublishSubject.create<Unit>()
 
+    //val logInStatus = BehaviorSubject.create<>()
+
     private val auth = FirebaseAuth.getInstance()
 
     val emailValid = BehaviorSubject.create<Boolean>()
     val passwordValid = BehaviorSubject.create<Boolean>()
 
-    private fun authenticate(email: String, password: String): Observable<AuthResult> {
-        return Observable.create { emitter ->
-            auth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener {
-                    emitter.onNext(it.result)
-                    emitter.onComplete()
-                }
-        }
+    private fun authenticate(email: String, password: String): @NonNull Single<AuthResult>? {
+            return Single.create{ emitter ->
+                auth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener {
+                        emitter.onSuccess(it.result)
+                        emitter.onError(it.exception)
+                    }
+            }
     }
 
     private fun passwordValidate(value: String) : Pair<Boolean, String> {
@@ -51,7 +55,8 @@ class LoginViewModel {
             .map {
                 emailValidate(it)
             }
-            .cacheWithInitialCapacity(1)
+            .share()
+//            .cacheWithInitialCapacity(1)
 
         val validatedEmail = emailTextSharedValidate
             .filter { it.first }
@@ -64,22 +69,24 @@ class LoginViewModel {
             .map {
                 passwordValidate(it)
             }
-            .replay()
-            .publish()
+            .share()
+//            .cacheWithInitialCapacity(1)
 
         val validatedPassword = passwordTextSharedValidate
             .filter { it.first }
             .map { it.second }
+
 
         logIn
             .withLatestFrom(
                 Observable.combineLatest(validatedEmail, validatedPassword, {first, second -> Pair(first, second)})
             , {first, second -> second}
             )
+            .observeOn(Schedulers.newThread())
             .doOnNext {
-                Log.d("HUY", it.toString())
+                Log.d("doOnNextLogIn", it.toString())
             }
-            .switchMap {
+            .flatMapSingle {
                 authenticate(it.first, it.second)
             }
             .subscribe {
@@ -108,7 +115,7 @@ class LoginViewModel {
                 emailValidate(it.first).first and passwordValidate(it.second).first
             }
             .doOnNext {
-                Log.d("HUY", it.toString())
+                Log.d("doOnNextCombined texts", it.toString())
             }
             .subscribe {
                 canLogIn.onNext(it)
