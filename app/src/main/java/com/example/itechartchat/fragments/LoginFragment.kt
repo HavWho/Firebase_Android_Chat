@@ -1,4 +1,4 @@
-package com.example.itechartchat
+package com.example.itechartchat.fragments
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -12,10 +12,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
+import androidx.appcompat.widget.AppCompatTextView
+import com.example.itechartchat.viewmodels.LoginViewModel
+import com.example.itechartchat.R
 import com.google.android.material.textfield.TextInputEditText
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.internal.disposables.DisposableHelper.dispose
-import timber.log.Timber
 import java.util.*
 
 /**
@@ -31,6 +32,7 @@ class LoginFragment : Fragment() {
     private lateinit var passwordTextInput : TextInputEditText
     private lateinit var loginButton : Button
     private lateinit var emailErrorText : String
+    private lateinit var signUpButton : AppCompatTextView
     private val loginViewModel = LoginViewModel()
 
     @SuppressLint("CheckResult")
@@ -42,7 +44,8 @@ class LoginFragment : Fragment() {
         mEmailTextInput = view.findViewById(R.id.email_textinputedittext)
         passwordTextInput = view.findViewById(R.id.password_textinputedittext)
         loginButton = view.findViewById(R.id.login_button)
-        //
+        signUpButton = view.findViewById(R.id.signUpText)
+
         Log.d("Fragment","onCreateView")
 
         //isValidEditText(mEmailTextInput.text.toString().trim())
@@ -91,6 +94,10 @@ class LoginFragment : Fragment() {
 
         loginButton.setOnClickListener {
             loginViewModel.logIn.onNext(Unit)
+        }
+
+        signUpButton.setOnClickListener {
+
         }
 
         loginViewModel.logInStatus

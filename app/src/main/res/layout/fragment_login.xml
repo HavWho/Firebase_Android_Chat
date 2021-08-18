@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
-    tools:context=".LoginFragment">
+    tools:context=".fragments.LoginFragment">
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/appCompatTextView2"
@@ -23,7 +23,7 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/appCompatTextView3"
-        android:layout_width="400dp"
+        android:layout_width="210dp"
         android:layout_height="24dp"
         android:layout_marginTop="4dp"
         android:fontFamily="monospace"
@@ -32,7 +32,24 @@
         android:textColor="#757575"
         android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.318"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appCompatTextView2" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/signUpText"
+        android:layout_width="80dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="4dp"
+        android:clickable="true"
+        android:fontFamily="monospace"
+        android:gravity="center_horizontal"
+        android:text="@string/signUp"
+        android:textColor="#757575"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/appCompatTextView3"
         app:layout_constraintTop_toBottomOf="@+id/appCompatTextView2" />
 
     <androidx.appcompat.widget.AppCompatTextView

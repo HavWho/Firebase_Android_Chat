@@ -1,4 +1,4 @@
-package com.example.itechartchat
+package com.example.itechartchat.fragmentstarters
 
 interface LoginFragmentStarter {
 

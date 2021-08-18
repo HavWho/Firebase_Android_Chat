@@ -1,4 +1,4 @@
-package com.example.itechartchat
+package com.example.itechartchat.viewmodels
 
 import android.annotation.SuppressLint
 import android.util.Log

@@ -2,13 +2,17 @@
     <string name="app_name">ITechArtChat</string>
     <string name="hyperref_forgot_password"><u>Forgot password?</u></string>
     <string name="password">Password</string>
+    <string name="confirmPassword">Confirm password</string>
     <string name="email">Email</string>
     <string name="logIn">LOG IN</string>
     <string name="welcome">Welcome!</string>
     <string name="signIn">Sign in to your account!</string>
     <string name="emailError">Your email is incorrect!</string>
     <string name="passwordError">Your password is incorrect!</string>
-    <string name="not_registered">Don\'t have a account. <u>Sign up.</u> </string>
+    <string name="confirmPasswordError">Password mismatch!</string>
+    <string name="not_registered">Don\'t have an account - </string>
+    <string name="signUp"><u>Sign up.</u></string>
+    <string name="registration">SIGN UP</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
