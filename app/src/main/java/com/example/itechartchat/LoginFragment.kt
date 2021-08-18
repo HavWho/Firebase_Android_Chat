@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
 import com.google.android.material.textfield.TextInputEditText
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.internal.disposables.DisposableHelper.dispose
@@ -92,7 +93,13 @@ class LoginFragment : Fragment() {
             loginViewModel.logIn.onNext(Unit)
         }
 
-
+        loginViewModel.logInStatus
+            .subscribe {
+                if (it != null)
+                    Toast.makeText(this.context, it.localizedMessage, Toast.LENGTH_LONG).show()
+                else
+                    Toast.makeText(this.context, "Success!", Toast.LENGTH_LONG).show()
+            }
 
         mEmailTextInput.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -122,7 +129,8 @@ class LoginFragment : Fragment() {
         loginViewModel.passwordText
             .distinctUntilChanged()
             .subscribe {
-
+                passwordTextInput.setText(it.toCharArray(), 0, it.length)
+                passwordTextInput.setSelection(passwordTextInput.text.toString().length)
             }
 
         passwordTextInput.addTextChangedListener(object : TextWatcher {

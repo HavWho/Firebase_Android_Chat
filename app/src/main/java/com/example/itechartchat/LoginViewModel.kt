@@ -16,12 +16,12 @@ import java.util.concurrent.TimeUnit
 @SuppressLint("CheckResult")
 class LoginViewModel {
 
-    val emailText = BehaviorSubject.createDefault("test")
-    val passwordText = BehaviorSubject.create<String>()
+    val emailText = BehaviorSubject.createDefault("unstopav@gmail.com")
+    val passwordText = BehaviorSubject.createDefault("helloworld")
     val canLogIn = BehaviorSubject.createDefault(false)
     val logIn = PublishSubject.create<Unit>()
 
-    //val logInStatus = BehaviorSubject.create<>()
+    val logInStatus = PublishSubject.create<Throwable?>()
 
     private val auth = FirebaseAuth.getInstance()
 
@@ -32,8 +32,13 @@ class LoginViewModel {
             return Single.create{ emitter ->
                 auth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener {
-                        emitter.onSuccess(it.result)
-                        emitter.onError(it.exception)
+                        if (it.isSuccessful) {
+                            emitter.onSuccess(it.result)
+                            logInStatus.onNext(it.exception)
+                        }
+                        else {
+                            logInStatus.onNext(it.exception)
+                        }
                     }
             }
     }
@@ -76,7 +81,6 @@ class LoginViewModel {
             .filter { it.first }
             .map { it.second }
 
-
         logIn
             .withLatestFrom(
                 Observable.combineLatest(validatedEmail, validatedPassword, {first, second -> Pair(first, second)})
@@ -86,18 +90,13 @@ class LoginViewModel {
             .doOnNext {
                 Log.d("doOnNextLogIn", it.toString())
             }
+            .doOnError {
+                Log.d("doOnErrorBeforeRetryWhen", it.message.toString())
+            }
             .flatMapSingle {
                 authenticate(it.first, it.second)
             }
-            /*.retryWhen {
-                it.flatMapSingle {
-                    authenticate(it.first, it.second)
-                }
-            }*/
-            /* TODO: ask about what to write in retryWhen
-            .retryWhen ({
-
-            })*/
+            .retry()
             .subscribe {
                 println(it.user?.uid)
             }
@@ -129,9 +128,6 @@ class LoginViewModel {
             .subscribe {
                 canLogIn.onNext(it)
             }
-
-
-
 
     }
 
