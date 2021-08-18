@@ -16,8 +16,8 @@ import java.util.concurrent.TimeUnit
 @SuppressLint("CheckResult")
 class LoginViewModel {
 
-    val emailText = BehaviorSubject.createDefault("unstopav@gmail.com")
-    val passwordText = BehaviorSubject.createDefault("helloworld")
+    val emailText = BehaviorSubject.createDefault("26.01.yanvar@gmail.com")
+    val passwordText = BehaviorSubject.createDefault("260102Sasha")
     val canLogIn = BehaviorSubject.createDefault(false)
     val logIn = PublishSubject.create<Unit>()
 
@@ -86,6 +86,7 @@ class LoginViewModel {
                 Observable.combineLatest(validatedEmail, validatedPassword, {first, second -> Pair(first, second)})
             , {first, second -> second}
             )
+            .subscribeOn(Schedulers.newThread())
             .observeOn(Schedulers.newThread())
             .doOnNext {
                 Log.d("doOnNextLogIn", it.toString())
