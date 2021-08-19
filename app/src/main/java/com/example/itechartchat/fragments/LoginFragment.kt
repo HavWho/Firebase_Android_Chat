@@ -27,11 +27,9 @@ import java.util.*
 
 class LoginFragment : Fragment() {
 
-    private lateinit var mBinding: LoginFragment
-    private lateinit var mEmailTextInput : TextInputEditText
+    private lateinit var emailTextInput : TextInputEditText
     private lateinit var passwordTextInput : TextInputEditText
     private lateinit var loginButton : Button
-    private lateinit var emailErrorText : String
     private lateinit var signUpButton : AppCompatTextView
     private val loginViewModel = LoginViewModel()
 
@@ -41,7 +39,7 @@ class LoginFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_login, container, false)
-        mEmailTextInput = view.findViewById(R.id.email_textinputedittext)
+        emailTextInput = view.findViewById(R.id.email_textinputedittext)
         passwordTextInput = view.findViewById(R.id.password_textinputedittext)
         loginButton = view.findViewById(R.id.login_button)
         signUpButton = view.findViewById(R.id.signUpText)
@@ -80,7 +78,7 @@ class LoginFragment : Fragment() {
             }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                mEmailTextInput.setError(getString(R.string.emailError), null)
+                emailTextInput.setError(getString(R.string.emailError), null)
             }
 
         loginViewModel.passwordValid
@@ -97,18 +95,21 @@ class LoginFragment : Fragment() {
         }
 
         signUpButton.setOnClickListener {
-
+            loginViewModel.signUp.onNext(Unit)
         }
 
-        loginViewModel.logInStatus
+        loginViewModel.logInErrorStatus
             .subscribe {
                 if (it != null)
                     Toast.makeText(this.context, it.localizedMessage, Toast.LENGTH_LONG).show()
-                else
-                    Toast.makeText(this.context, "Success!", Toast.LENGTH_LONG).show()
             }
 
-        mEmailTextInput.addTextChangedListener(object : TextWatcher {
+        loginViewModel.logInSuccessStatus
+            .subscribe {
+                Toast.makeText(this.context, "Success!", Toast.LENGTH_LONG).show()
+            }
+
+        emailTextInput.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
             }
@@ -129,8 +130,8 @@ class LoginFragment : Fragment() {
             .distinctUntilChanged()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                mEmailTextInput.setText(it.toCharArray(), 0, it.length)
-                mEmailTextInput.setSelection(mEmailTextInput.text.toString().length)
+                emailTextInput.setText(it.toCharArray(), 0, it.length)
+                emailTextInput.setSelection(emailTextInput.text.toString().length)
             }
 
         loginViewModel.passwordText

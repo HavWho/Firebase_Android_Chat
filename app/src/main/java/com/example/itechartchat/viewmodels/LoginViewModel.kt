@@ -3,8 +3,10 @@ package com.example.itechartchat.viewmodels
 import android.annotation.SuppressLint
 import android.util.Log
 import android.util.Patterns
+import com.example.itechartchat.coordinators.LoginFlowCoordinator
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
+import com.mindorks.nybus.NYBus
 import io.reactivex.Observable
 import io.reactivex.SingleSource
 import io.reactivex.Single
@@ -16,12 +18,20 @@ import java.util.concurrent.TimeUnit
 @SuppressLint("CheckResult")
 class LoginViewModel {
 
+    val rxBus : NYBus = NYBus.get()
+
+    private val loginCoordinator = LoginFlowCoordinator()
+
     val emailText = BehaviorSubject.createDefault("26.01.yanvar@gmail.com")
     val passwordText = BehaviorSubject.createDefault("260102Sasha")
     val canLogIn = BehaviorSubject.createDefault(false)
-    val logIn = PublishSubject.create<Unit>()
 
-    val logInStatus = PublishSubject.create<Throwable?>()
+    val logIn = PublishSubject.create<Unit>()
+    val logInErrorStatus = PublishSubject.create<Throwable?>()
+    val logInSuccessStatus = PublishSubject.create<AuthResult>()
+
+    val signUp = PublishSubject.create<Unit>()
+    val signUpError = PublishSubject.create<Throwable>()
 
     private val auth = FirebaseAuth.getInstance()
 
@@ -34,11 +44,9 @@ class LoginViewModel {
                     .addOnCompleteListener {
                         if (it.isSuccessful) {
                             emitter.onSuccess(it.result)
-                            logInStatus.onNext(it.exception)
                         }
-                        else {
-                            logInStatus.onNext(it.exception)
-                        }
+                        else
+                            emitter.onError(it.exception)
                     }
             }
     }
@@ -52,6 +60,16 @@ class LoginViewModel {
     }
 
     init {
+
+        //TODO: Understand why io.reactivex.exceptions.OnErrorNotImplementedException
+        signUp
+            .doOnError {
+                signUpError.onNext(it)
+            }
+            .subscribe {
+                signUp.onError(Throwable())
+                loginCoordinator.registerNewUser()
+            }
 
         val emailTextSharedValidate = emailText
             .debounce(300, TimeUnit.MILLISECONDS)
@@ -97,9 +115,12 @@ class LoginViewModel {
             .flatMapSingle {
                 authenticate(it.first, it.second)
             }
+            .doOnError {
+                logInErrorStatus.onNext(it)
+            }
             .retry()
             .subscribe {
-                println(it.user?.uid)
+                logInSuccessStatus.onNext(it)
             }
 
         passwordTextSharedValidate
