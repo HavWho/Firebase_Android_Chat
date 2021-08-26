@@ -6,17 +6,20 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.AppCompatTextView
-import com.example.itechartchat.viewmodels.LoginViewModel
 import com.example.itechartchat.R
+import com.example.itechartchat.viewmodels.LoginViewModelInterface
 import com.google.android.material.textfield.TextInputEditText
 import io.reactivex.android.schedulers.AndroidSchedulers
+import java.security.Key
 import java.util.*
 
 /**
@@ -25,13 +28,12 @@ import java.util.*
  * create an instance of this fragment.
  */
 
-class LoginFragment : Fragment() {
+class LoginFragment(val viewModel: LoginViewModelInterface): Fragment() {
 
     private lateinit var emailTextInput : TextInputEditText
     private lateinit var passwordTextInput : TextInputEditText
     private lateinit var loginButton : Button
     private lateinit var signUpButton : AppCompatTextView
-    private val loginViewModel = LoginViewModel()
 
     @SuppressLint("CheckResult")
     override fun onCreateView(
@@ -57,13 +59,13 @@ class LoginFragment : Fragment() {
 
         Log.d("Fragment", "onResume")
 
-        loginViewModel.canLogIn
+        viewModel.canLogIn
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 loginButton.isClickable = it
             }
 
-        loginViewModel.canLogIn
+        viewModel.canLogIn
             .map {
                 if (it) 1.0f else 0.5f
             }
@@ -72,7 +74,7 @@ class LoginFragment : Fragment() {
                 loginButton.alpha = it
             }
 
-        loginViewModel.emailValid
+        viewModel.emailValid
             .filter {
                 it.equals(false)
             }
@@ -81,7 +83,7 @@ class LoginFragment : Fragment() {
                 emailTextInput.setError(getString(R.string.emailError), null)
             }
 
-        loginViewModel.passwordValid
+        viewModel.passwordValid
             .filter {
                 it.equals(false)
             }
@@ -91,22 +93,17 @@ class LoginFragment : Fragment() {
             }
 
         loginButton.setOnClickListener {
-            loginViewModel.logIn.onNext(Unit)
+            viewModel.logIn.onNext(Unit)
         }
 
         signUpButton.setOnClickListener {
-            loginViewModel.signUp.onNext(Unit)
+            viewModel.signUp.onNext(Unit)
         }
 
-        loginViewModel.logInErrorStatus
+        viewModel.recoverableError
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                if (it != null)
-                    Toast.makeText(this.context, it.localizedMessage, Toast.LENGTH_LONG).show()
-            }
-
-        loginViewModel.logInSuccessStatus
-            .subscribe {
-                Toast.makeText(this.context, "Success!", Toast.LENGTH_LONG).show()
+                Toast.makeText(this.context, it, Toast.LENGTH_LONG).show()
             }
 
         emailTextInput.addTextChangedListener(object : TextWatcher {
@@ -119,14 +116,14 @@ class LoginFragment : Fragment() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                if (loginViewModel.emailText.value != s.toString().trim())
-                    loginViewModel.emailText.onNext(s.toString().trim())
+                if (viewModel.emailText.value != s.toString().trim())
+                    viewModel.emailText.onNext(s.toString().trim())
                 //loginViewModel.passwordText = mEmailTextInput.text.toString().trim()
             }
 
         })
 
-        loginViewModel.emailText
+        viewModel.emailText
             .distinctUntilChanged()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
@@ -134,7 +131,7 @@ class LoginFragment : Fragment() {
                 emailTextInput.setSelection(emailTextInput.text.toString().length)
             }
 
-        loginViewModel.passwordText
+        viewModel.passwordText
             .distinctUntilChanged()
             .subscribe {
                 passwordTextInput.setText(it.toCharArray(), 0, it.length)
@@ -151,8 +148,8 @@ class LoginFragment : Fragment() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                if (loginViewModel.passwordText.value != s.toString().trim())
-                    loginViewModel.passwordText.onNext(s.toString().trim())
+                if (viewModel.passwordText.value != s.toString().trim())
+                    viewModel.passwordText.onNext(s.toString().trim())
             }
 
         })
@@ -166,14 +163,23 @@ class LoginFragment : Fragment() {
 
     override fun onPause() {
         Log.d("Fragment","onPause")
-        loginViewModel.emailText.onComplete()
-        loginViewModel.passwordText.onComplete()
-        loginViewModel.logIn.onComplete()
-        loginViewModel.canLogIn.onComplete()
-        loginViewModel.emailValid.onComplete()
-        loginViewModel.passwordValid.onComplete()
+        viewModel.emailText.onComplete()
+        viewModel.passwordText.onComplete()
+        viewModel.logIn.onComplete()
+        viewModel.canLogIn.onComplete()
+        viewModel.emailValid.onComplete()
+        viewModel.passwordValid.onComplete()
         super.onPause()
     }
+
+    /*requireView().setOnKeyListener { v, keyCode, event ->
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) {
+            viewModel.backButtonPressed.onNext(Unit)
+            return@setOnKeyListener true
+        }
+        else
+            return@setOnKeyListener false
+    }*/
 
     override fun onAttach(context: Context) {
         Log.d("Fragment","onAttach")
@@ -188,14 +194,6 @@ class LoginFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         Log.d("Fragment","onStart")
-    }
-
-    companion object {
-        @JvmStatic
-        fun newInstance() : LoginFragment {
-            val fragment = LoginFragment()
-            return fragment
-        }
     }
 
 }

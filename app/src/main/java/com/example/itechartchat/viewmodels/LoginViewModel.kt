@@ -3,72 +3,57 @@ package com.example.itechartchat.viewmodels
 import android.annotation.SuppressLint
 import android.util.Log
 import android.util.Patterns
+import com.example.itechartchat.coordinators.CoordinatorInterface
 import com.example.itechartchat.coordinators.LoginFlowCoordinator
+import com.example.itechartchat.coordinators.LoginFlowCoordinatorInterface
+import com.example.itechartchat.other.FirebaseAPIClient
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.mindorks.nybus.NYBus
 import io.reactivex.Observable
 import io.reactivex.SingleSource
 import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
 
+interface LoginViewModelInterface {
+    val emailText: BehaviorSubject<String>
+    val passwordText: BehaviorSubject<String>
+    val emailValid: BehaviorSubject<Boolean>
+    val passwordValid: BehaviorSubject<Boolean>
+
+    val canLogIn: BehaviorSubject<Boolean>
+
+    val logIn: PublishSubject<Unit>
+    val signUp: PublishSubject<Unit>
+
+    val recoverableError: PublishSubject<String?>
+
+}
+
 @SuppressLint("CheckResult")
-class LoginViewModel {
+class LoginViewModel(val coordinator: LoginFlowCoordinatorInterface) : LoginViewModelInterface, FirebaseAPIClient {
 
-    val rxBus : NYBus = NYBus.get()
+    override val emailText = BehaviorSubject.createDefault("26.01.yanvar@gmail.com")
+    override val passwordText = BehaviorSubject.createDefault("260102Sasha")
+    override val canLogIn = BehaviorSubject.createDefault(false)
 
-    private val loginCoordinator = LoginFlowCoordinator()
+    override val logIn = PublishSubject.create<Unit>()
+    override val recoverableError = PublishSubject.create<String?>()
 
-    val emailText = BehaviorSubject.createDefault("26.01.yanvar@gmail.com")
-    val passwordText = BehaviorSubject.createDefault("260102Sasha")
-    val canLogIn = BehaviorSubject.createDefault(false)
+    override val signUp = PublishSubject.create<Unit>()
 
-    val logIn = PublishSubject.create<Unit>()
-    val logInErrorStatus = PublishSubject.create<Throwable?>()
-    val logInSuccessStatus = PublishSubject.create<AuthResult>()
-
-    val signUp = PublishSubject.create<Unit>()
-    val signUpError = PublishSubject.create<Throwable>()
-
-    private val auth = FirebaseAuth.getInstance()
-
-    val emailValid = BehaviorSubject.create<Boolean>()
-    val passwordValid = BehaviorSubject.create<Boolean>()
-
-    private fun authenticate(email: String, password: String): SingleSource<AuthResult>? {
-            return Single.create{ emitter ->
-                auth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener {
-                        if (it.isSuccessful) {
-                            emitter.onSuccess(it.result)
-                        }
-                        else
-                            emitter.onError(it.exception)
-                    }
-            }
-    }
-
-    private fun passwordValidate(value: String) : Pair<Boolean, String> {
-        return Pair(value.length >= 6, value)
-    }
-
-    private fun emailValidate(value: String) : Pair<Boolean, String> {
-        return Pair(Patterns.EMAIL_ADDRESS.matcher(value).matches(), value)
-    }
+    override val emailValid = BehaviorSubject.create<Boolean>()
+    override val passwordValid = BehaviorSubject.create<Boolean>()
 
     init {
 
-        //TODO: Understand why io.reactivex.exceptions.OnErrorNotImplementedException
         signUp
-            .doOnError {
-                signUpError.onNext(it)
-            }
             .subscribe {
-                signUp.onError(Throwable())
-                loginCoordinator.registerNewUser()
+                coordinator.startSignUpFragment()
             }
 
         val emailTextSharedValidate = emailText
@@ -78,8 +63,7 @@ class LoginViewModel {
             .map {
                 emailValidate(it)
             }
-            .share()
-//            .cacheWithInitialCapacity(1)
+            .cacheWithInitialCapacity(1)
 
         val validatedEmail = emailTextSharedValidate
             .filter { it.first }
@@ -92,8 +76,7 @@ class LoginViewModel {
             .map {
                 passwordValidate(it)
             }
-            .share()
-//            .cacheWithInitialCapacity(1)
+            .cacheWithInitialCapacity(1)
 
         val validatedPassword = passwordTextSharedValidate
             .filter { it.first }
@@ -104,7 +87,6 @@ class LoginViewModel {
                 Observable.combineLatest(validatedEmail, validatedPassword, {first, second -> Pair(first, second)})
             , {first, second -> second}
             )
-            .subscribeOn(Schedulers.newThread())
             .observeOn(Schedulers.newThread())
             .doOnNext {
                 Log.d("doOnNextLogIn", it.toString())
@@ -116,11 +98,12 @@ class LoginViewModel {
                 authenticate(it.first, it.second)
             }
             .doOnError {
-                logInErrorStatus.onNext(it)
+                recoverableError.onNext(it.localizedMessage)
             }
             .retry()
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                logInSuccessStatus.onNext(it)
+                recoverableError.onNext("Success")
             }
 
         passwordTextSharedValidate
