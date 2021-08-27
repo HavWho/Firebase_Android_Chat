@@ -13,6 +13,6 @@
     <string name="not_registered">Don\'t have an account - </string>
     <string name="signUp"><u>Sign up.</u></string>
     <string name="registration">SIGN UP</string>
-    <!-- TODO: Remove or change this placeholder text -->
+    <string name="password_signup_mismatch">Password mismatch!</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

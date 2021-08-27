@@ -14,6 +14,7 @@
         android:layout_height="48dp"
         android:layout_marginBottom="184dp"
         android:background="@drawable/gradient_button"
+        android:enabled="true"
         android:fontFamily="monospace"
         android:text="@string/registration"
         android:textColor="@color/black"
@@ -38,7 +39,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/email_textinputedittext"
+            android:id="@+id/email_signup_textinputedittext"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#5E5858"
@@ -47,7 +48,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/password_signiup_textinputlayout"
+        android:id="@+id/password_signup_textinputlayout"
         android:layout_width="300dp"
         android:layout_height="56dp"
 
@@ -61,7 +62,7 @@
         app:passwordToggleTint="@color/design_default_color_background">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/password_textinputedittext"
+            android:id="@+id/password_signup_textinputedittext"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#5A5656"
@@ -78,7 +79,7 @@
         app:errorEnabled="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/password_signiup_textinputlayout"
+        app:layout_constraintTop_toBottomOf="@+id/password_signup_textinputlayout"
         app:passwordToggleContentDescription="description"
         app:passwordToggleEnabled="true"
         app:passwordToggleTint="@color/design_default_color_background">

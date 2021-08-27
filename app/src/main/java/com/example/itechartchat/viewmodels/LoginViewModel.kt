@@ -35,7 +35,8 @@ interface LoginViewModelInterface {
 }
 
 @SuppressLint("CheckResult")
-class LoginViewModel(val coordinator: LoginFlowCoordinatorInterface) : LoginViewModelInterface, FirebaseAPIClient {
+class LoginViewModel(val coordinator: LoginFlowCoordinatorInterface) : LoginViewModelInterface,
+    FirebaseAPIClient {
 
     override val emailText = BehaviorSubject.createDefault("26.01.yanvar@gmail.com")
     override val passwordText = BehaviorSubject.createDefault("260102Sasha")
@@ -84,8 +85,10 @@ class LoginViewModel(val coordinator: LoginFlowCoordinatorInterface) : LoginView
 
         logIn
             .withLatestFrom(
-                Observable.combineLatest(validatedEmail, validatedPassword, {first, second -> Pair(first, second)})
-            , {first, second -> second}
+                Observable.combineLatest(
+                    validatedEmail,
+                    validatedPassword,
+                    { first, second -> Pair(first, second) }), { first, second -> second }
             )
             .observeOn(Schedulers.newThread())
             .doOnNext {
@@ -123,7 +126,7 @@ class LoginViewModel(val coordinator: LoginFlowCoordinatorInterface) : LoginView
             }
 
         Observable
-            .combineLatest(emailText, passwordText, {first, second -> Pair(first, second)})
+            .combineLatest(emailText, passwordText, { first, second -> Pair(first, second) })
             .map {
                 emailValidate(it.first).first and passwordValidate(it.second).first
             }

@@ -6,20 +6,17 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.AppCompatTextView
 import com.example.itechartchat.R
 import com.example.itechartchat.viewmodels.LoginViewModelInterface
 import com.google.android.material.textfield.TextInputEditText
 import io.reactivex.android.schedulers.AndroidSchedulers
-import java.security.Key
 import java.util.*
 
 /**
@@ -41,8 +38,8 @@ class LoginFragment(val viewModel: LoginViewModelInterface): Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_login, container, false)
-        emailTextInput = view.findViewById(R.id.email_textinputedittext)
-        passwordTextInput = view.findViewById(R.id.password_textinputedittext)
+        emailTextInput = view.findViewById(R.id.email_signup_textinputedittext)
+        passwordTextInput = view.findViewById(R.id.password_signup_textinputedittext)
         loginButton = view.findViewById(R.id.login_button)
         signUpButton = view.findViewById(R.id.signUpText)
 
@@ -171,15 +168,6 @@ class LoginFragment(val viewModel: LoginViewModelInterface): Fragment() {
         viewModel.passwordValid.onComplete()
         super.onPause()
     }
-
-    /*requireView().setOnKeyListener { v, keyCode, event ->
-        if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) {
-            viewModel.backButtonPressed.onNext(Unit)
-            return@setOnKeyListener true
-        }
-        else
-            return@setOnKeyListener false
-    }*/
 
     override fun onAttach(context: Context) {
         Log.d("Fragment","onAttach")
