@@ -15,4 +15,5 @@
     <string name="registration">SIGN UP</string>
     <string name="password_signup_mismatch">Password mismatch!</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="recover_password">RESTORE</string>
 </resources>

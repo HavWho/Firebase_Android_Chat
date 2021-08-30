@@ -7,6 +7,7 @@ import com.example.itechartchat.coordinators.CoordinatorInterface
 import com.example.itechartchat.coordinators.LoginFlowCoordinator
 import com.example.itechartchat.coordinators.LoginFlowCoordinatorInterface
 import com.example.itechartchat.other.FirebaseAPIClient
+import com.example.itechartchat.other.Validator
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.mindorks.nybus.NYBus
@@ -29,6 +30,7 @@ interface LoginViewModelInterface {
 
     val logIn: PublishSubject<Unit>
     val signUp: PublishSubject<Unit>
+    val forgotPassword: PublishSubject<Unit>
 
     val recoverableError: PublishSubject<String?>
 
@@ -46,11 +48,19 @@ class LoginViewModel(val coordinator: LoginFlowCoordinatorInterface) : LoginView
     override val recoverableError = PublishSubject.create<String?>()
 
     override val signUp = PublishSubject.create<Unit>()
+    override val forgotPassword = PublishSubject.create<Unit>()
 
     override val emailValid = BehaviorSubject.create<Boolean>()
     override val passwordValid = BehaviorSubject.create<Boolean>()
 
+    val validator = Validator()
+
     init {
+
+        forgotPassword
+            .subscribe {
+                coordinator.startForgotPasswordFragment()
+            }
 
         signUp
             .subscribe {
@@ -62,7 +72,7 @@ class LoginViewModel(val coordinator: LoginFlowCoordinatorInterface) : LoginView
             .distinctUntilChanged()
             .observeOn(Schedulers.newThread())
             .map {
-                emailValidate(it)
+                validator.emailValidate(it)
             }
             .cacheWithInitialCapacity(1)
 
@@ -75,7 +85,7 @@ class LoginViewModel(val coordinator: LoginFlowCoordinatorInterface) : LoginView
             .distinctUntilChanged()
             .observeOn(Schedulers.newThread())
             .map {
-                passwordValidate(it)
+                validator.passwordValidate(it)
             }
             .cacheWithInitialCapacity(1)
 
@@ -128,7 +138,7 @@ class LoginViewModel(val coordinator: LoginFlowCoordinatorInterface) : LoginView
         Observable
             .combineLatest(emailText, passwordText, { first, second -> Pair(first, second) })
             .map {
-                emailValidate(it.first).first and passwordValidate(it.second).first
+                validator.emailValidate(it.first).first and validator.passwordValidate(it.second).first
             }
             .doOnNext {
                 Log.d("doOnNextCombined texts", it.toString())

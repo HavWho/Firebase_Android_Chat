@@ -1,10 +1,11 @@
 package com.example.itechartchat.coordinators
 
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import com.example.itechartchat.R
+import com.example.itechartchat.fragments.ForgotPasswordFragment
 import com.example.itechartchat.fragments.LoginFragment
 import com.example.itechartchat.fragments.SignUpFragment
+import com.example.itechartchat.viewmodels.ForgotPasswordViewModel
 import com.example.itechartchat.viewmodels.LoginViewModel
 import com.example.itechartchat.viewmodels.SignUpViewModel
 
@@ -13,7 +14,9 @@ interface LoginFlowCoordinatorInterface: CoordinatorInterface {
     fun startLogInFragment()
     fun finishLogInFragment()
     fun startSignUpFragment()
-    //TODO: fun startForgotPasswordFragment()
+    fun finishSignUpFragment()
+    fun startForgotPasswordFragment()
+    fun finishForgotPasswordFragment()
 }
 
 interface SignUpFlowCoordinatorInterface: CoordinatorInterface {
@@ -23,10 +26,11 @@ interface SignUpFlowCoordinatorInterface: CoordinatorInterface {
 
 interface ForgotPasswordFlowCoordinatorInterface: CoordinatorInterface {
     fun startForgotPasswordFragment()
+    fun finishForgotPasswordFragment()
 }
 
 class LoginFlowCoordinator(val activity: FragmentManager): CoordinatorInterface, SignUpFlowCoordinatorInterface,
-    LoginFlowCoordinatorInterface {
+    LoginFlowCoordinatorInterface, ForgotPasswordFlowCoordinatorInterface {
 
     override fun startLogInFragment() {
         val viewModel = LoginViewModel(this)
@@ -57,6 +61,17 @@ class LoginFlowCoordinator(val activity: FragmentManager): CoordinatorInterface,
 
     override fun finishSignUpFragment() {
         startLogInFragment()
+    }
+
+    override fun finishForgotPasswordFragment() {
+        startLogInFragment()
+    }
+
+    override fun startForgotPasswordFragment() {
+        val viewModel = ForgotPasswordViewModel(this)
+        activity.beginTransaction()
+            .replace(R.id.container, ForgotPasswordFragment(viewModel))
+            .commit()
     }
 
 }

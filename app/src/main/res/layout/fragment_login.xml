@@ -132,10 +132,11 @@
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/forgotpassword_textview"
         android:layout_width="359dp"
-        android:layout_height="30dp"
+        android:layout_height="48dp"
+        android:clickable="true"
+
         android:fontFamily="monospace"
         android:gravity="center"
-
         android:text="@string/hyperref_forgot_password"
         android:textColor="#757575"
         android:textSize="15sp"

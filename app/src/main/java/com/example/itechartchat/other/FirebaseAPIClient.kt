@@ -8,15 +8,28 @@ import io.reactivex.SingleSource
 
 interface FirebaseAPIClient {
 
+    fun recoverPassword(email: String): SingleSource<Unit> {
+        val auth = FirebaseAuth.getInstance()
+        return Single.create { emitter ->
+            auth.sendPasswordResetEmail(email)
+                .addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        emitter.onSuccess(Unit)
+                    } else {
+                        emitter.onError(it.exception)
+                    }
+                }
+        }
+    }
+
     fun authenticate(email: String, password: String): SingleSource<AuthResult>? {
         val auth = FirebaseAuth.getInstance()
-        return Single.create{ emitter ->
+        return Single.create { emitter ->
             auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener {
                     if (it.isSuccessful) {
                         emitter.onSuccess(it.result)
-                    }
-                    else
+                    } else
                         emitter.onError(it.exception)
                 }
         }
@@ -24,24 +37,15 @@ interface FirebaseAPIClient {
 
     fun register(email: String, password: String): SingleSource<AuthResult>? {
         val auth = FirebaseAuth.getInstance()
-        return Single.create{ emitter ->
+        return Single.create { emitter ->
             auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener {
                     if (it.isSuccessful) {
                         emitter.onSuccess(it.result)
-                    }
-                    else
+                    } else
                         emitter.onError(it.exception)
                 }
         }
-    }
-
-    fun passwordValidate(value: String) : Pair<Boolean, String> {
-        return Pair(value.length >= 6, value)
-    }
-
-    fun emailValidate(value: String) : Pair<Boolean, String> {
-        return Pair(Patterns.EMAIL_ADDRESS.matcher(value).matches(), value)
     }
 
 }

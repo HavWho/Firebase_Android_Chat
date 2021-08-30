@@ -3,6 +3,7 @@ package com.example.itechartchat.viewmodels
 import android.annotation.SuppressLint
 import com.example.itechartchat.coordinators.SignUpFlowCoordinatorInterface
 import com.example.itechartchat.other.FirebaseAPIClient
+import com.example.itechartchat.other.Validator
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
@@ -49,6 +50,8 @@ class SignUpViewModel(private val coordinator: SignUpFlowCoordinatorInterface) :
 
     override val recoverableError = PublishSubject.create<String?>()
 
+    val validator = Validator()
+
     init {
         backAction
             .subscribe {
@@ -60,7 +63,7 @@ class SignUpViewModel(private val coordinator: SignUpFlowCoordinatorInterface) :
             .distinctUntilChanged()
             .observeOn(Schedulers.newThread())
             .map {
-                emailValidate(it)
+                validator.emailValidate(it)
             }
             .cacheWithInitialCapacity(1)
 
@@ -78,7 +81,7 @@ class SignUpViewModel(private val coordinator: SignUpFlowCoordinatorInterface) :
             .distinctUntilChanged()
             .observeOn(Schedulers.newThread())
             .map {
-                passwordValidate(it)
+                validator.passwordValidate(it)
             }
             .cacheWithInitialCapacity(1)
 

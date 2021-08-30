@@ -31,6 +31,7 @@ class LoginFragment(val viewModel: LoginViewModelInterface): Fragment() {
     private lateinit var passwordTextInput : TextInputEditText
     private lateinit var loginButton : Button
     private lateinit var signUpButton : AppCompatTextView
+    private lateinit var forgotPassword: AppCompatTextView
 
     @SuppressLint("CheckResult")
     override fun onCreateView(
@@ -42,6 +43,7 @@ class LoginFragment(val viewModel: LoginViewModelInterface): Fragment() {
         passwordTextInput = view.findViewById(R.id.password_signup_textinputedittext)
         loginButton = view.findViewById(R.id.login_button)
         signUpButton = view.findViewById(R.id.signUpText)
+        forgotPassword = view.findViewById(R.id.forgotpassword_textview)
 
         Log.d("Fragment","onCreateView")
 
@@ -95,6 +97,10 @@ class LoginFragment(val viewModel: LoginViewModelInterface): Fragment() {
 
         signUpButton.setOnClickListener {
             viewModel.signUp.onNext(Unit)
+        }
+
+        forgotPassword.setOnClickListener {
+            viewModel.forgotPassword.onNext(Unit)
         }
 
         viewModel.recoverableError
