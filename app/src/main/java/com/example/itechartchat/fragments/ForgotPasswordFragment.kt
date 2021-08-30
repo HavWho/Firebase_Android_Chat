@@ -74,7 +74,7 @@ class ForgotPasswordFragment(val viewModel: ForgotPasswordViewModel) : Fragment(
 
         viewModel.emailValid
             .filter {
-                it == false
+                !it
             }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
