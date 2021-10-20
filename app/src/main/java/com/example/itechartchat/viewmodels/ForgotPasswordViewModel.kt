@@ -24,8 +24,8 @@ interface ForgotPasswordViewModelInterface {
 }
 
 @SuppressLint("CheckResult")
-class ForgotPasswordViewModel(val coordinator: ForgotPasswordFlowCoordinatorInterface, val api: FirebaseAPIClient):
-    ForgotPasswordViewModelInterface {
+class ForgotPasswordViewModel(val coordinator: ForgotPasswordFlowCoordinatorInterface):
+    ForgotPasswordViewModelInterface, FirebaseAPIClient {
 
     override val backAction = PublishSubject.create<Unit>()
     override val emailText = BehaviorSubject.createDefault("26.01.yanvar@gmail.com")
@@ -64,7 +64,7 @@ class ForgotPasswordViewModel(val coordinator: ForgotPasswordFlowCoordinatorInte
             .withLatestFrom(emailValidate, {first, second -> second})
             .observeOn(Schedulers.newThread())
             .flatMapSingle {
-                api.recoverPassword(it.second)
+                recoverPassword(it.second)
             }
             .doOnError {
                 recoverableError.onNext(it.localizedMessage)

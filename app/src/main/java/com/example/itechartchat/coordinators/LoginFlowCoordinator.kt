@@ -2,9 +2,11 @@ package com.example.itechartchat.coordinators
 
 import androidx.fragment.app.FragmentManager
 import com.example.itechartchat.R
+import com.example.itechartchat.fragments.ChatsFragment
 import com.example.itechartchat.fragments.ForgotPasswordFragment
 import com.example.itechartchat.fragments.LoginFragment
 import com.example.itechartchat.fragments.SignUpFragment
+import com.example.itechartchat.viewmodels.ChatsViewModel
 import com.example.itechartchat.viewmodels.ForgotPasswordViewModel
 import com.example.itechartchat.viewmodels.LoginViewModel
 import com.example.itechartchat.viewmodels.SignUpViewModel
@@ -49,7 +51,10 @@ class LoginFlowCoordinator(val activity: FragmentManager): CoordinatorInterface,
     }
 
     override fun finishLogInFragment() {
-        activity.executePendingTransactions()
+        val viewModel = ChatsViewModel(this)
+        activity.beginTransaction()
+            .replace(R.id.container, ChatsFragment(viewModel))
+            .commit()
     }
 
     override fun startSignUpFragment() {
